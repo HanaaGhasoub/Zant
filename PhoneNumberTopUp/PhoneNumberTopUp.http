@@ -1,0 +1,6 @@
+@PhoneNumberTopUp_HostAddress = http://localhost:5197
+
+GET {{PhoneNumberTopUp_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
