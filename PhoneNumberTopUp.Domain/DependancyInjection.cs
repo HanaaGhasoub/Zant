@@ -10,9 +10,14 @@ public static class DependancyInjection
     {
         services.AddDataServices(configuration);
 
+        services.Configure<ServiceOptions>(options => configuration.GetSection("ServiceOptions"));
+
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IBeneficiaryService, BeneficiaryService>();
         services.AddScoped<ITopUpService, TopUpService>();
+
+        services.AddScoped<IBalanaceService, BalanaceService>();
+        services.AddScoped<IDebitService, DebitService>();
 
         return services;
     }

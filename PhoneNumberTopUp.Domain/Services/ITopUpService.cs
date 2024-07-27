@@ -6,5 +6,5 @@ public interface ITopUpService
 {
     Task<List<TopUpOption>> GetTopUpOptions();
 
-    //TODO: Process top-up
+    Task Process(Guid userId, int phoneNumber, int amount, CancellationToken cancellationToken);
 }

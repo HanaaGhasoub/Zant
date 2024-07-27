@@ -17,16 +17,16 @@ public class TopUpController : ControllerBase
         this.topUpService = topUpService;
     }
 
-    [HttpPost]
-    public ActionResult TopUp(TopUpRecord topUpBeneficiary)
+    [HttpPost("{userId}")]
+    public async Task<ActionResult> TopUp([FromBody] TopUpRecord topUpRecord, CancellationToken cancellationToken = default)
     {
-        //TODO: execute top - up transactions for user UAE phone numbers.
+        await topUpService.Process(topUpRecord.UserId, topUpRecord.PhoneNumber, topUpRecord.Amount, cancellationToken);
 
         return Ok();
     }
 
-    [HttpGet]
-    public async Task<ActionResult> Get()
+    [HttpGet("{userId}/options")]
+    public async Task<ActionResult> TopUpOptions(CancellationToken cancellationToken = default)
     {
         var topUpOptions = await topUpService.GetTopUpOptions();
 

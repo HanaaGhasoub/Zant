@@ -15,6 +15,9 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDomainServices(builder.Configuration);
 
+//depending on how the mobile application's authentication, probably JWT, changes to be applied for the below middleware.
+//builder.Services.AddAuthentication();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
