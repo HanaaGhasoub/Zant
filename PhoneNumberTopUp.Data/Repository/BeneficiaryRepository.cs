@@ -8,16 +8,11 @@ public class BeneficiaryRepository : IBeneficiaryRepository
 {
     private readonly TopUpDb topUpDb;
     private readonly ILogger<BeneficiaryRepository> logger;
-    private readonly DataOptions dataOptions;
 
-    public BeneficiaryRepository(
-        TopUpDb topUpDb,
-        ILogger<BeneficiaryRepository> logger,
-        DataOptions dataOptions)
+    public BeneficiaryRepository(TopUpDb topUpDb, ILogger<BeneficiaryRepository> logger)
     {
         this.topUpDb = topUpDb;
         this.logger = logger;
-        this.dataOptions = dataOptions;
     }
 
     public async Task<int> AddBeneficiary(Guid userId, int phoneNumber, string nickname)
@@ -48,17 +43,17 @@ public class BeneficiaryRepository : IBeneficiaryRepository
     private async Task<bool> InvalidBeneficiaryData(Guid userId, int phoneNumber, string nickname)
     {
         //validate nickname length.
-        if (nickname.Length > dataOptions.MaxBeneficiaryNicknameLength)
+        if (nickname.Length > 20)
         {
-            logger.LogWarning("Beneficiary nickname {PhoneNumber}-{Nickname} length is greater than {MAXBENEFICIARYNICKNAMELENGTH} for user {UserId}.",
-                phoneNumber, nickname, dataOptions.MaxBeneficiaryNicknameLength, userId);
+            logger.LogWarning("Beneficiary nickname {PhoneNumber}-{Nickname} length should not be greater than 20 for user {UserId}.",
+                phoneNumber, nickname, userId);
             return true;
         }
 
         var userBeneficiaries = await GetBeneficiariesByUser(userId);
 
         // validate max allowed beneficiary count.
-        if (userBeneficiaries.Count == dataOptions.MaxBeneficiaryCountPerUser)
+        if (userBeneficiaries.Count == 5)
         {
             logger.LogWarning("User {UserId} has the max limit of adding beneficiary.", userId);
             return true;
@@ -82,14 +77,16 @@ public class BeneficiaryRepository : IBeneficiaryRepository
         {
             var userBeneficiaries = await GetBeneficiariesByUser(userId);
 
-            var deletedBeneficiary = userBeneficiaries.FirstOrDefault(b => b.PhoneNumber == phoneNumber);
+            var beneficiary = userBeneficiaries.FirstOrDefault(b => b.PhoneNumber == phoneNumber);
 
-            if (deletedBeneficiary == null)
+            if (beneficiary == null)
             {
                 return -1;
             }
 
-            userBeneficiaries.Remove(deletedBeneficiary);
+            beneficiary.Deleted = true;
+
+            topUpDb.Beneficiarys.Update(beneficiary);
 
             return await topUpDb.SaveChangesAsync();
         }
@@ -102,6 +99,6 @@ public class BeneficiaryRepository : IBeneficiaryRepository
 
     public async Task<List<Beneficiary>> GetBeneficiariesByUser(Guid userId)
     {
-        return await topUpDb.Beneficiarys.Where(b => b.UserId == userId).ToListAsync();
+        return await topUpDb.Beneficiarys.Where(b => b.UserId == userId && !b.Deleted).ToListAsync();
     }
 }

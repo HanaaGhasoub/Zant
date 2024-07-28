@@ -2,7 +2,9 @@
 
 public class User
 {
-    public Guid Id { get; }
-    public required string Name { get; init; }
+    public Guid Id { get; set; }
+
     public required bool Verified { get; init; }
+
+    public required int PhoneNumber { get; set; }
 }

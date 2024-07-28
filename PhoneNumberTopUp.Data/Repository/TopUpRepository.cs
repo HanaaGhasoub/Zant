@@ -15,7 +15,7 @@ public class TopUpRepository : ITopUpRepository
         this.logger = logger;
     }
 
-    public async Task<TopUpTransaction?> AddTransaction(Guid userId, int amount, int phoneNumber, int topUpCharges)
+    public async Task<int> AddTransaction(Guid userId, int amount, int phoneNumber, int topUpCharges)
     {
         try
         {
@@ -29,20 +29,25 @@ public class TopUpRepository : ITopUpRepository
 
             topUpDb.TopUpTransactions.Add(transaction);
 
-            var result = await topUpDb.SaveChangesAsync();
-
-            return result == 1 ? transaction : null;
+            return await topUpDb.SaveChangesAsync();
         }
         catch (Exception ex)
         {
             logger.LogError(ex, string.Empty);
-            return null;
+            return 0;
         }
     }
 
-    public async Task<List<TopUpOption>> GetTopUpOptions()
+    public List<TopUpOption> GetTopUpOptions()
     {
-        return await topUpDb.TopUpOptions.ToListAsync();
+        return [
+            new () { DisplayName = "AED 5", Value = 5 },
+            new () { DisplayName = "AED 10", Value = 10 },
+            new () { DisplayName = "AED 20", Value = 20 },
+            new () { DisplayName = "AED 30", Value = 30 },
+            new () { DisplayName = "AED 50", Value = 50 },
+            new () { DisplayName = "AED 75", Value = 75 },
+            new () { DisplayName = "AED 100", Value = 100 } ];
     }
 
     public async Task<List<TopUpTransaction>> GetTransactionsInThisMonth(Guid userId)

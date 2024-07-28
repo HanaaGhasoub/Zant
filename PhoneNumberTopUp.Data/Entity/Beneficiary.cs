@@ -9,4 +9,6 @@ public class Beneficiary
     public required int PhoneNumber { get; init; }
 
     public required string Nickname { get; init; }
+
+    public bool Deleted { get; set; }
 }

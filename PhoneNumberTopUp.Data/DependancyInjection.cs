@@ -12,8 +12,6 @@ public static class DependancyInjection
         services.AddDbContext<TopUpDb>(options =>
            options.UseInMemoryDatabase(databaseName: "TopUpDb"));
 
-        services.Configure<DataOptions>(options => configuration.GetSection("DataOptions"));
-
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IBeneficiaryRepository, BeneficiaryRepository>();
         services.AddScoped<ITopUpRepository, TopUpRepository>();

@@ -38,7 +38,7 @@ public class BeneficiariesController : ControllerBase
         {
             BeneficiaryOperationStatus.ServerError => StatusCode((int)HttpStatusCode.InternalServerError, beneficiary),
             BeneficiaryOperationStatus.ValidationError => StatusCode((int)HttpStatusCode.BadRequest, beneficiary),
-            _ => Created()
+            _ => Created("{userId}/beneficiaries", beneficiary)
         };
     }
 

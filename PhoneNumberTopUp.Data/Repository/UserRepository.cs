@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using PhoneNumberTopUp.Data.Entity;
+﻿using PhoneNumberTopUp.Data.Entity;
 
 namespace PhoneNumberTopUp.Data.Repository;
 
@@ -14,6 +13,12 @@ public class UserRepository : IUserRepository
 
     public async Task<User?> Get(Guid id)
     {
-        return await topUpDb.Users.FirstOrDefaultAsync(u => u.Id == id);
+        // return await topUpDb.Users.FirstOrDefaultAsync(u => u.Id == id);
+        return await Task.FromResult(new User
+        {
+            Id = id,
+            Verified = true,
+            PhoneNumber = 1234567
+        });
     }
 }

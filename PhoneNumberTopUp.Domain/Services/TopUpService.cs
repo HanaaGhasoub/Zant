@@ -1,4 +1,5 @@
-﻿using PhoneNumberTopUp.Data.Entity;
+﻿using Microsoft.Extensions.Logging;
+using PhoneNumberTopUp.Data.Entity;
 using PhoneNumberTopUp.Data.Repository;
 
 namespace PhoneNumberTopUp.Domain.Services;
@@ -9,72 +10,26 @@ public class TopUpService : ITopUpService
     private const int MaxTopUpAmountPerCalendarMonthPerBeneficiaryForVerifiedUser = 500;
     private const int MaxTopUpAmountPerCalendarMonthForVerifiedUser = 3000;
 
-    private const int TopUpCharges = 1;
-
     private readonly ITopUpRepository topUpRepository;
-    private readonly IUserRepository userRepository;
-    private readonly IBalanaceService balanaceService;
-    private readonly IDebitService debitService;
+    private readonly ILogger<TopUpService> logger;
 
-    public TopUpService(
-        ITopUpRepository topUpRepository,
-        IUserRepository userRepository,
-        IBalanaceService balanaceService,
-        IDebitService debitService)
+    public TopUpService(ITopUpRepository topUpRepository, ILogger<TopUpService> logger)
     {
         this.topUpRepository = topUpRepository;
-        this.userRepository = userRepository;
-        this.balanaceService = balanaceService;
-        this.debitService = debitService;
+        this.logger = logger;
     }
 
-    public async Task<List<TopUpOption>> GetTopUpOptions()
+    public async Task<int> AddTransaction(Guid userId, int amount, int phoneNumber, int topUpCharges)
     {
-        return await topUpRepository.GetTopUpOptions();
+        return await topUpRepository.AddTransaction(userId, amount, phoneNumber, topUpCharges);
     }
 
-    public async Task Process(Guid userId, int phoneNumber, int amount, CancellationToken cancellationToken)
+    public List<TopUpOption> GetTopUpOptions()
     {
-        var user = await userRepository.Get(userId);
-        if (user == null)
-        {
-            return;
-        }
-
-        if (await UserAreNotAllowForNewTopUp(user, phoneNumber, amount))
-        {
-            return;
-        }
-
-        var transactionAmount = amount + TopUpCharges;
-
-        // TODO: call external http service to get user balanace.
-        var userBalance = await balanaceService.GetBalance(userId, cancellationToken);
-        // TODO: validate the user has enough balanace.
-        if (userBalance < transactionAmount)
-        {
-            return;
-        }
-
-        // TODO: call external http service to post debit transaction
-        var debitTransactionResponse = await debitService
-            .ExecuteDebitTransaction(userId, transactionAmount, $"Top up phone number {phoneNumber}", cancellationToken);
-        if (!debitTransactionResponse)
-        {
-            return;
-        }
-
-        var transaction = await topUpRepository.AddTransaction(userId, amount, phoneNumber, TopUpCharges);
-        if (transaction == null)
-        {
-            //TODO: retry logic
-
-            //TODO: if retry does not work as well, then log.
-            return;
-        }
+        return topUpRepository.GetTopUpOptions();
     }
 
-    private async Task<bool> UserAreNotAllowForNewTopUp(User user, int phoneNumber, int amount)
+    public async Task<bool> NewTransactionIsAllowed(User user, int phoneNumber, int amount)
     {
         var transactionsInThisMonth = await topUpRepository.GetTransactionsInThisMonth(user.Id);
 
@@ -86,7 +41,7 @@ public class TopUpService : ITopUpService
         //user cannot topup more than 3000 per calendar month per all beneficiaries.
         if (newtotalTopUpAmountInThisMonth > MaxTopUpAmountPerCalendarMonthForVerifiedUser)
         {
-            return true;
+            return false;
         }
 
         //total topup amounts in this months for one beneficiary provided.
@@ -99,15 +54,15 @@ public class TopUpService : ITopUpService
         //verified user cannot topup more than 500 per calendar month per beneficiary.
         if (user.Verified && newtotalTopUpAmountInThisMonthPerBeneficiary > MaxTopUpAmountPerCalendarMonthPerBeneficiaryForVerifiedUser)
         {
-            return true;
+            return false;
         }
 
         //non-verified user cannot topup more than 1000 per calendar month per beneficiary.
         if (!user.Verified && newtotalTopUpAmountInThisMonthPerBeneficiary > MaxTopUpAmountPerCalendarMonthPerBeneficiaryForNotVerifiedUser)
         {
-            return true;
+            return false;
         }
 
-        return false;
+        return true;
     }
 }
