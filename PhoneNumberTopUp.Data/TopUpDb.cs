@@ -4,6 +4,7 @@ using PhoneNumberTopUp.Data.Entity;
 namespace PhoneNumberTopUp.Data;
 public class TopUpDb : DbContext
 {
+    public TopUpDb() { }
     public TopUpDb(DbContextOptions options) : base(options)
     {
     }
@@ -21,7 +22,7 @@ public class TopUpDb : DbContext
         modelBuilder.Entity<TopUpTransaction>().HasIndex(t => t.UserId);
         modelBuilder.Entity<TopUpTransaction>().HasIndex(t => t.TransactionDateTime);
 
-        modelBuilder.Entity<TopUpOption>().HasKey(t => t.Value);        
+        modelBuilder.Entity<TopUpOption>().HasKey(t => t.Value);
     }
 
     public DbSet<User> Users { get; set; }

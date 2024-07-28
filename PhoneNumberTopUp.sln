@@ -3,11 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34902.65
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhoneNumberTopUp.API", "PhoneNumberTopUp\PhoneNumberTopUp.API.csproj", "{3A990A4C-A986-4FFE-88AE-CD92873693EC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PhoneNumberTopUp.API", "PhoneNumberTopUp.API\PhoneNumberTopUp.API.csproj", "{3A990A4C-A986-4FFE-88AE-CD92873693EC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhoneNumberTopUp.Data", "PhoneNumberTopUp.Data\PhoneNumberTopUp.Data.csproj", "{02B27061-BE49-42F4-A81F-BC920AD58F8A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PhoneNumberTopUp.Data", "PhoneNumberTopUp.Data\PhoneNumberTopUp.Data.csproj", "{02B27061-BE49-42F4-A81F-BC920AD58F8A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhoneNumberTopUp.Domain", "PhoneNumberTopUp.Domain\PhoneNumberTopUp.Domain.csproj", "{B8DCB4D4-B577-4125-86B6-40D4B5DA4115}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PhoneNumberTopUp.Domain", "PhoneNumberTopUp.Domain\PhoneNumberTopUp.Domain.csproj", "{B8DCB4D4-B577-4125-86B6-40D4B5DA4115}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhoneNumberTopUp.UnitTest", "PhoneNumberTopUp.UnitTest\PhoneNumberTopUp.UnitTest.csproj", "{707068DC-004B-404D-BEF2-B3D4A6BF86A6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{B8DCB4D4-B577-4125-86B6-40D4B5DA4115}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B8DCB4D4-B577-4125-86B6-40D4B5DA4115}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B8DCB4D4-B577-4125-86B6-40D4B5DA4115}.Release|Any CPU.Build.0 = Release|Any CPU
+		{707068DC-004B-404D-BEF2-B3D4A6BF86A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{707068DC-004B-404D-BEF2-B3D4A6BF86A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{707068DC-004B-404D-BEF2-B3D4A6BF86A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{707068DC-004B-404D-BEF2-B3D4A6BF86A6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
